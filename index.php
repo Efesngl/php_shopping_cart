@@ -1,8 +1,7 @@
 <?php
 require_once("libs/db.php");
 $products = $db->query("select * from products");
-$cart_count=$db->query("select count(*) as 'count' from shopping_cart")->fetch_object();
-$order_count=$db->query("select count(*) as 'count' from orders")->fetch_object();
+
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -17,6 +16,7 @@ $order_count=$db->query("select count(*) as 'count' from orders")->fetch_object(
 </head>
 
 <body>
+    <?php require_once("assets/includes/navbar.php");?>
     <div class="container">
         <h2 class="text-center">Ürünler</h2>
         <div class="row justify-content-center">
@@ -29,24 +29,18 @@ $order_count=$db->query("select count(*) as 'count' from orders")->fetch_object(
                     </div>
                     <div class="row justify-content-between text-center">
                         <div class="col-6">
-                            <a href="libs/add_to_cart.php?ID=<?php echo $row->ID;?>" class="btn btn-primary">Sepete Ekle</a>
+                            <a href="libs/add_to_cart.php?ID=<?php echo $row->ID; ?>" class="btn btn-primary">Sepete Ekle</a>
                         </div>
                         <div class="col-6">
-                            <a href="libs/delete_product.php?ID=<?php echo $row->ID;?>" class="btn btn-danger">Ürünü sil</a>
+                            <a href="libs/delete_product.php?ID=<?php echo $row->ID; ?>" class="btn btn-danger">Ürünü sil</a>
                         </div>
                     </div>
                 </div>
             <?php endwhile; ?>
         </div>
         <div class="row">
-            <div class="col-4 text-center">
+            <div class="col-12 text-center">
                 <a href="add_product.php" class="mt-3 btn btn-success">Ürün ekle</a>
-            </div>
-            <div class="col-4 text-center">
-                <a href="cart.php" class="mt-3 btn btn-primary">Sepet (<?php echo $cart_count->count;?>)</a>
-            </div>
-            <div class="col-4 text-center">
-                <a href="orders.php" class="mt-3 btn btn-secondary">Siparişler (<?php echo $order_count->count;?>)</a>
             </div>
         </div>
     </div>

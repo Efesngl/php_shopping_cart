@@ -15,6 +15,7 @@ $orders=$db->query("select * from orders");
 </head>
 
 <body>
+<?php require_once("assets/includes/navbar.php");?>
     <div class="container">
         <h2 class="text-center">Siparişler</h2> 
         <div class="row justify-content-evenly bg-secondary-subtle mt-5">

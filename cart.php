@@ -1,12 +1,14 @@
 <?php
 require_once("libs/db.php");
 $products = $db->query("
-        select p.*,sc.ID as 'sc_ID' from shopping_cart as sc
+        select p.*,sc.ID as 'sc_ID',sc.quantity from shopping_cart as sc
         inner join products as p on p.ID=sc.product_id
     ");
+// echo "<pre>";print_r($products);die();
 $cart_sum = $db->query("        
-    select sum(p.product_price) as 'toplam' from shopping_cart as sc
+    select sum(p.product_price*sc.quantity) as 'toplam' from shopping_cart as sc
     inner join products as p on p.ID=sc.product_id")->fetch_object();
+    $cart_count = $db->query("select count(*) as 'count' from shopping_cart")->fetch_object();
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -20,43 +22,60 @@ $cart_sum = $db->query("
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 </head>
 
-<body>
+<body class="bg-secondary-subtle">
+    <?php require_once("assets/includes/navbar.php"); ?>
     <div class="container">
-        <h2 class="text-center">Sepet</h2>
-        <div class="row justify-content-evenly mt-5">
-            <div class="col-6 bg-secondary-subtle">
-                <div class="col-12 p-3">
-                    <h3>Sepetteki ürünler</h3>
-                    <?php while ($row = $products->fetch_object()) : ?>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title"><?php echo $row->product_name; ?></h5>
-                                <p class="card-text"><?php echo number_format($row->product_price, 2, ".", ","); ?> TL</p>
-                                <a href="libs/delete_from_cart.php?ID=<?php echo $row->sc_ID; ?>" class="btn btn-danger">Sepetten kaldır</a>
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
-                </div>
-            </div>
-            <div class="col-5 bg-secondary-subtle">
-                <div class="col-12   p-3">
-                <h3>Sepet Bilgileri</h3>
-                <br>
-                <h3>Sepet Toplamı : <span><?php echo number_format($cart_sum->toplam, 2, ".", ","); ?> TL</span></h3>
-                <a href="libs/checkout.php?total=<?php echo $cart_sum->toplam;?>" class="btn btn-success">Sepeti onayla</a>
-                </div>
+        <h2 class="text-center">Sepetinizde <span class="text-danger"><?php echo $cart_count->count;?></span> adet ürün var</h2>
+        <div class="row justify-content-center mt-5">
+            <div class="col-8 p-0">
+                <table class="table mb-1 table-bordered border-secondary-subtle table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Ürün resmi</th>
+                            <th class="text-center">Ürün adı</th>
+                            <th class="text-center">Ürün fiyatı</th>
+                            <th class="text-center">Ürün adedi</th>
+                            <th class="text-center">Toplam</th>
+                            <th class="text-center">Sepetten Çıkar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($products->num_rows > 0) : while ($row = $products->fetch_object()) :$total=$row->product_price*$row->quantity; ?>
+                                <tr>
+                                    <td><img src="assets/img/product17.webp" style="width:50px;" alt=""></td>
+                                    <td><?php echo $row->product_name; ?></td>
+                                    <td><?php echo number_format($row->product_price,2,".",","); ?> TL</td>
+                                    <td class="text-center" style="width:150px;">
+                                        <a href="libs/quantity.php?ID=<?php echo $row->ID;?>&quantity=<?php echo $row->quantity+1;?>"><i class="fa-solid fa-square-plus fa-lg"></i></a>
+                                        <input type="text" class="form-control w-25 d-inline" value="<?php echo $row->quantity; ?>">
+                                        <a href="libs/quantity.php?ID=<?php echo $row->ID;?>&quantity=<?php echo $row->quantity-1;?>"><i class="fa-solid fa-square-minus fa-lg"></i></a>
+                                    </td>
+                                    <td><?php echo number_format($total,2,".",","); ?> TL</td>
+                                    <td class="text-center"><a href="libs/delete_from_cart.php?ID=<?php echo $row->ID; ?>" class="btn btn-danger mt-3">Sepetten Çıkar</a></td>
+                                </tr>
+                            <?php endwhile;endif;?>
+                    </tbody>
+                    <tfoot class="p-3 bg-dark-subtle">
+                        <tr>
+                            <td colspan="2" class="text-end">Toplam: <?php echo number_format($cart_sum->toplam, 2, ".", ","); ?> TL</td>
+                            <td colspan="4" class="text-end"><a href="libs/checkout.php" class="btn btn-success">Sepeti Onayla</a></td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
-        <div class="row mt-5">
-            <div class="col-12 text-center">
-                <a href="index.php" class="btn btn-danger">Ana sayfaya dön</a>
-            </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <a href="index.php" class="btn btn-danger">Ana sayfaya dön</a>
         </div>
+    </div>
     </div>
 
 
     <script src="assets/js/script.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/0d17341adb.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

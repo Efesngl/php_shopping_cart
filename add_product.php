@@ -11,6 +11,7 @@
 </head>
 
 <body>
+<?php require_once("assets/includes/navbar.php");?>
     <div class="container">
         <h2 class="text-center">Ürün Ekle</h2>
         <div class="row justify-content-center">
