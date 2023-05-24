@@ -1,13 +1,14 @@
 <?php
 require_once("libs/db.php");
 $products = $db->prepare("
-        select p.* from order_products as op
+        select p.*,op.quantity from order_products as op
         inner join products as p on p.ID=op.product_id
         where op.order_id=?
     ");
 $products->bind_param("i", $_GET["ID"]);
 $products->execute();
 $pr =$products->get_result(); 
+
 $cart_sum = $db->prepare("        
     select total as 'toplam' from orders where ID=?
 ");
@@ -27,41 +28,56 @@ $cs=$cart_sum->get_result()->fetch_object();
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 </head>
 
-<body>
+<body class="bg-secondary-subtle">
+    <?php require_once("assets/includes/navbar.php"); ?>
     <div class="container">
-        <h2 class="text-center">Sepet</h2>
-        <div class="row justify-content-evenly mt-5">
-            <div class="col-6 bg-secondary-subtle">
-                <div class="col-12 p-3">
-                    <h3>Sepetteki ürünler</h3>
-                    <?php while ($row = $pr->fetch_object()) : ?>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title"><?php echo $row->product_name; ?></h5>
-                                <p class="card-text"><?php echo number_format($row->product_price, 2, ".", ","); ?> TL</p>
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
-                </div>
-            </div>
-            <div class="col-5 bg-secondary-subtle">
-                <div class="col-12   p-3">
-                    <h3>Sipariş Bilgileri</h3>
-                    <br>
-                    <h3>Sipariş Toplamı : <span><?php echo number_format($cs->toplam, 2, ".", ","); ?> TL</span></h3>
-                </div>
+        <h2 class="text-center">Sepetinizde <span class="text-danger"><?php echo $cart_count->count;?></span> adet ürün var</h2>
+        <div class="row justify-content-center mt-5">
+            <div class="col-8 p-0">
+                <table class="table mb-1 table-bordered border-secondary-subtle table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Ürün resmi</th>
+                            <th class="text-center">Ürün adı</th>
+                            <th class="text-center">Ürün fiyatı</th>
+                            <th class="text-center">Ürün adedi</th>
+                            <th class="text-center">Toplam</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($pr->num_rows > 0) : while ($row = $pr->fetch_object()) :$total=$row->product_price*$row->quantity; ?>
+                                <tr>
+                                    <td><img src="assets/img/product17.webp" style="width:50px;" alt=""></td>
+                                    <td><?php echo $row->product_name; ?></td>
+                                    <td><?php echo number_format($row->product_price,2,".",","); ?> TL</td>
+                                    <td class="text-center" style="width:150px;"><?php echo $row->quantity;?></td>
+                                    <td><?php echo number_format($total,2,".",","); ?> TL</td>
+                                </tr>
+                            <?php endwhile;endif;?>
+                    </tbody>
+                    <tfoot class="p-3 bg-dark-subtle">
+                        <tr>
+                            <td colspan="5" class="text-end">Sipariş toplam: <?php echo number_format($cs->toplam, 2, ".", ","); ?> TL</td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
-        <div class="row mt-5">
-            <div class="col-12 text-center">
-                <a href="orders.php" class="btn btn-danger">Geri git</a>
-            </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-6 text-center">
+            <a href="orders.php" class="btn btn-primary">Geri Git</a>
         </div>
+        <div class="col-6 text-center">
+            <a href="index.php" class="btn btn-danger">Ana sayfaya dön</a>
+        </div>
+    </div>
     </div>
 
 
     <script src="assets/js/script.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/0d17341adb.js" crossorigin="anonymous"></script>
 </body>
 
 </html>
