@@ -4,8 +4,9 @@ if(url.length==0){
 }
 let navbars=document.querySelectorAll(".nav-link");
 navbars.forEach(elem=>{
-    console.log(elem)
     if(elem.dataset.link==url){
         elem.classList.add("active");
     }
 })
+
+const ajax=new XMLHttpRequest();

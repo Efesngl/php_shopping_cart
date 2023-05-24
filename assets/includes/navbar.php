@@ -1,5 +1,5 @@
 <?php 
-    require_once("libs/db.php");
+    require_once("lib/db.php");
     $cart_count = $db->query("select count(*) as 'count' from shopping_cart")->fetch_object();
     $order_count = $db->query("select count(*) as 'count' from orders")->fetch_object();
 ?>
@@ -15,16 +15,15 @@
                         <a class="nav-link" data-link="index.php" aria-current="page" href="index.php">Ürünler</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" data-link="add_product.php" href="add_product.php">Ürün Ekle</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" data-link="orders.php" href="orders.php">Siparişler (<?php echo $order_count->count;?>)</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-link="cart.php" href="cart.php">Sepet (<?php echo $cart_count->count;?>)</a>
                     </li>
                 </ul>
-                <!-- <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form> -->
             </div>
         </div>
     </nav>

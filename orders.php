@@ -1,17 +1,12 @@
 <?php
-require_once("libs/db.php");
+require_once("lib/db.php");
 $orders=$db->query("Select * from orders"); 
 ?>
 <!DOCTYPE html>
 <html lang="tr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siparişler</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+<?php require_once("assets/includes/head.php");?>
 </head>
 
 <body class="bg-secondary-subtle">

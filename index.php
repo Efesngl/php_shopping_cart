@@ -1,5 +1,5 @@
 <?php
-require_once("libs/db.php");
+require_once("lib/db.php");
 $products = $db->query("select * from products");
 
 ?>
@@ -7,21 +7,16 @@ $products = $db->query("select * from products");
 <html lang="tr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sepet</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <?php require_once("assets/includes/head.php"); ?>
 </head>
 
 <body>
-    <?php require_once("assets/includes/navbar.php");?>
+    <?php require_once("assets/includes/navbar.php"); ?>
     <div class="container">
         <h2 class="text-center">Ürünler</h2>
-        <div class="row justify-content-center">
+        <div class="row mt-1 mb-5 justify-content-center">
             <?php while ($row = $products->fetch_object()) : ?>
-                <div class="card justify-content-between p-3" style="width: 18rem;">
+                <div class="card m-2 justify-content-between p-3" style="width: 18rem;">
                     <img src="assets/img/product17.webp" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title"><?php echo $row->product_name ?></h5>
@@ -29,25 +24,19 @@ $products = $db->query("select * from products");
                     </div>
                     <div class="row justify-content-between text-center">
                         <div class="col-6">
-                            <a href="libs/add_to_cart.php?ID=<?php echo $row->ID; ?>" class="btn btn-primary">Sepete Ekle</a>
+                            <button data-product_id="<?php echo $row->ID ?>" id="add-to-cart" class="btn btn-primary">Sepete Ekle</button>
                         </div>
                         <div class="col-6">
-                            <a href="libs/delete_product.php?ID=<?php echo $row->ID; ?>" class="btn btn-danger">Ürünü sil</a>
+                            <button data-product_id="<?php echo $row->ID ?>" id="delete-product" class="btn btn-danger">Ürünü sil</button>
                         </div>
                     </div>
                 </div>
             <?php endwhile; ?>
         </div>
-        <div class="row">
-            <div class="col-12 text-center">
-                <a href="add_product.php" class="mt-3 btn btn-success">Ürün ekle</a>
-            </div>
-        </div>
     </div>
 
-
-    <script src="assets/js/script.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/index.js"></script>
 </body>
 
 </html>
